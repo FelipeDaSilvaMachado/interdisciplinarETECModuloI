@@ -1,0 +1,152 @@
+EXPLICAÇÃO DETALHADA DO CÓDIGO DA INTERFACE DO JOGO
+================================================
+
+=== HTML ===
+
+<!DOCTYPE html>                     <!-- Declara que este é um documento HTML5 -->
+<html lang="pt-BR">                 <!-- Início do documento HTML, definindo português do Brasil como idioma -->
+<head>                              <!-- Cabeçalho do documento -->
+    <meta charset="UTF-8">          <!-- Define a codificação de caracteres como UTF-8 (suporta acentos) -->
+    <title>Jogo de Adivinhação</title>  <!-- Define o título que aparece na aba do navegador -->
+</head>
+<body>                              <!-- Corpo do documento, onde fica o conteúdo visível -->
+    <div class="container">         <!-- Div principal que centraliza o conteúdo -->
+        <h1>Bem-vindo ao Jogo de Adivinhação</h1>  <!-- Título principal da página -->
+        <button class="btn-jogar" onclick="iniciarJogo()">Jogar</button>  <!-- Botão que inicia o jogo -->
+    </div>
+
+    <!-- Modal (janela popup) que aparece quando o botão Jogar é clicado -->
+    <div id="mensagemModal" class="modal">     <!-- Container do modal -->
+        <div class="modal-content">            <!-- Conteúdo do modal -->
+            <span class="close" onclick="fecharModal()">&times;</span>  <!-- Botão X para fechar o modal -->
+            <p>Esse jogo foi criado para que você se divirta...</p>     <!-- Mensagem do modal -->
+            <button class="btn-jogar" onclick="executarJogo()">Começar</button>  <!-- Botão que inicia o jogo -->
+        </div>
+    </div>
+</body>
+</html>
+
+=== CSS ===
+
+/* Estilo do corpo da página */
+body {
+    font-family: Arial, sans-serif;     /* Define a fonte do texto */
+    display: flex;                      /* Usa flexbox para centralizar conteúdo */
+    justify-content: center;            /* Centraliza horizontalmente */
+    align-items: center;                /* Centraliza verticalmente */
+    height: 100vh;                      /* Altura total da viewport */
+    margin: 0;                          /* Remove margens padrão */
+    background-color: #f0f0f0;          /* Cor de fundo cinza claro */
+}
+
+/* Estilo do container principal */
+.container {
+    text-align: center;                 /* Centraliza texto */
+    padding: 20px;                      /* Espaçamento interno */
+    background-color: white;            /* Fundo branco */
+    border-radius: 10px;                /* Cantos arredondados */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra suave */
+}
+
+/* Estilo do botão Jogar */
+.btn-jogar {
+    padding: 15px 30px;                 /* Espaçamento interno do botão */
+    font-size: 18px;                    /* Tamanho da fonte */
+    background-color: #4CAF50;          /* Cor de fundo verde */
+    color: white;                       /* Texto branco */
+    border: none;                       /* Remove borda */
+    border-radius: 5px;                 /* Cantos arredondados */
+    cursor: pointer;                    /* Cursor vira mãozinha ao passar por cima */
+    transition: background-color 0.3s;   /* Animação suave da cor de fundo */
+}
+
+/* Efeito hover do botão */
+.btn-jogar:hover {
+    background-color: #45a049;          /* Cor mais escura ao passar o mouse */
+}
+
+/* Estilo do modal (popup) */
+.modal {
+    display: none;                      /* Começa invisível */
+    position: fixed;                    /* Posição fixa na tela */
+    top: 0;
+    left: 0;
+    width: 100%;                        /* Ocupa toda a largura */
+    height: 100%;                       /* Ocupa toda a altura */
+    background-color: rgba(0,0,0,0.5);  /* Fundo semi-transparente */
+}
+
+/* Conteúdo do modal */
+.modal-content {
+    background-color: white;            /* Fundo branco */
+    margin: 15% auto;                   /* Margem superior e centralizado */
+    padding: 20px;                      /* Espaçamento interno */
+    width: 80%;                         /* Largura de 80% */
+    max-width: 500px;                   /* Largura máxima */
+    border-radius: 5px;                 /* Cantos arredondados */
+    position: relative;                 /* Para posicionar o botão de fechar */
+}
+
+/* Botão de fechar (X) */
+.close {
+    position: absolute;                 /* Posicionamento absoluto */
+    right: 10px;                        /* 10px da direita */
+    top: 5px;                           /* 5px do topo */
+    font-size: 24px;                    /* Tamanho da fonte */
+    cursor: pointer;                    /* Cursor vira mãozinha */
+}
+
+=== JAVASCRIPT ===
+
+// Função que mostra o modal quando o botão Jogar é clicado
+function iniciarJogo() {
+    document.getElementById('mensagemModal').style.display = 'block';  // Torna o modal visível
+}
+
+// Função que fecha o modal
+function fecharModal() {
+    document.getElementById('mensagemModal').style.display = 'none';   // Esconde o modal
+}
+
+// Função que será chamada quando o usuário clicar em Começar
+function executarJogo() {
+    // Aqui você irá adicionar o código para chamar seu jogo Python
+    fecharModal();                      // Fecha o modal
+    window.location.href = '/executar-jogo';  // Redireciona para a rota do jogo
+}
+
+// Função que fecha o modal quando o usuário clica fora dele
+window.onclick = function(event) {
+    let modal = document.getElementById('mensagemModal');
+    if (event.target == modal) {        // Se o clique foi fora do conteúdo do modal
+        modal.style.display = 'none';    // Esconde o modal
+    }
+}
+
+=== COMO USAR ===
+
+1. Crie três arquivos:
+   - index.html: Coloque o código HTML
+   - styles.css: Coloque o código CSS
+   - script.js: Coloque o código JavaScript
+
+2. No arquivo index.html, adicione os links para os arquivos CSS e JavaScript:
+   - Antes do </head>:
+     <link rel="stylesheet" href="styles.css">
+   - Antes do </body>:
+     <script src="script.js"></script>
+
+3. Para integrar com seu jogo Python:
+   - Configure um servidor web (como Flask)
+   - Modifique a função executarJogo() para se comunicar com seu servidor
+   - Crie as rotas necessárias no servidor para executar seu jogo
+
+=== OBSERVAÇÕES ===
+
+- O código está organizado de forma modular para fácil manutenção
+- O design é responsivo e se adapta a diferentes tamanhos de tela
+- A interface é intuitiva e amigável para o usuário
+- O modal pode ser fechado de três formas:
+  1. Clicando no X
+  2. Clicando fora do modal
+  3. Clicando no botão Começar
