@@ -1,59 +1,44 @@
-from flask import Flask, request, jsonify
-import forca
-
-# Esta linha importa as classes e funções necessárias do módulo Flask:
-# Flask: Usado para criar a aplicação web.
-# request: Usado para acessar dados da solicitação HTTP.
-# jsonify: Usado para converter o retorno da função em JSON.
+from flask_cors import CORS
+from flask import Flask, send_from_directory, jsonify, render_template
+import os
 
 app = Flask(__name__)
-jogo = forca()
-# Cria uma instância da aplicação Flask.
-# __name__ é um argumento especial que define o nome do módulo atual.
+CORS(app)
 
 @app.route('/')
-def index(): 
+def index():
     return render_template('chamadaJogoPython.html')
 
-@app.route('/jogar', methods=['POST'])
-def jogar():
-    dados = request.json
-    # Função que executa a lógica do seu jogo
-    resultadoJogo = executarJogo(dados)
-    return jsonify(resultadoJogo)
+@app.route('/dist', methods=['GET'])
+def download_jogo():
+    try:
+        # Ajustando o caminho para a pasta dist
+        download_folder = os.path.join(os.path.dirname(__file__), 'dist')
 
-# @app.route('/jogar', methods=['POST']):
-# Define uma rota /jogar para a aplicação.
-# Especifica que essa rota aceita apenas solicitações HTTP do tipo POST.
-# def jogar():
-# Define a função que será executada quando a rota /jogar for acessada.
-# dados = request.json:
-# Captura os dados JSON enviados na solicitação POST.
-# resultado_jogo = executar_jogo(dados):
-# Chama a função executar_jogo passando os dados recebidos.
-# (Você deve implementar a lógica do jogo nesta função.)
-# return jsonify(resultado_jogo):
-# Converte o resultado da função executar_jogo em JSON e retorna como resposta.
+        # Verificar se o arquivo existe
+        arquivo = 'forca.exe'
+        caminho_completo = os.path.join(download_folder, arquivo)
+        print(f"Tentando acessar arquivo em: {caminho_completo}")
 
+        if not os.path.exists(caminho_completo):
+            print(f"Arquivo não encontrado em: {caminho_completo}")  # Debug
+            print(f"O arquivo existe? {os.path.exists(caminho_completo)}")
+            return jsonify({
+                'status': 'erro',
+                'mensagem': 'Arquivo não encontrado'
+            }), 404
 
-def executarJogo(dados):
-    # Lógica do seu jogo aqui
-    return {"mensagem": "Jogo executado com sucesso!", "dados": dados}
-
-# def executar_jogo(dados)::
-# Define a função que contém a lógica do seu jogo.
-# Lógica do seu jogo aqui:
-# Comentário indicando onde a lógica do jogo deve ser implementada.
-# return {"mensagem": "Jogo executado com sucesso!", "dados": dados}:
-# Retorna um dicionário com uma mensagem de sucesso e os dados recebidos.
-
+        return send_from_directory(
+            directory=download_folder,
+            path=arquivo,
+            as_attachment=True
+        )
+    except Exception as e:
+        print(f"Erro: {str(e)}")  # Debug
+        return jsonify({
+            'status': 'erro',
+            'mensagem': str(e)
+        }), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
-# if __name__ == '__main__'::
-# Garante que a aplicação Flask só será executada se o script for executado
-# diretamente, e não importado como um módulo.
-# app.run(debug=True):
-# Inicia o servidor Flask com o modo de depuração ativado, permitindo mensagens
-# de erro detalhadas e reinicialização automática do servidor ao fazer
-# alterações no código.
+    app.run(debug=True, port=8080)
